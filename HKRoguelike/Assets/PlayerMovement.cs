@@ -38,9 +38,9 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Jump();
         Movement();
         ApplyDirection();
+        Jump();
         applyGravity();
         clampVelocity();
         Dash();
@@ -65,12 +65,27 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) | Input.GetKeyDown(KeyCode.K))
         {
-            if (jumpsLeft > 0)
+            if (!_isGrounded)
             {
-                _velocity = new Vector2(_velocity.x, jumpForce);
-                _isGrounded = false;
-                --jumpsLeft;
+                if (_againstWallLeft)
+                {
+                    _velocity = new Vector2(3, jumpForce);
+                    SetFaceRight(true);
+                    return;
+                }
+                if (_againstWallRight)
+                {
+                    _velocity = new Vector2(-3, jumpForce);
+                    SetFaceRight(false);
+                    return;
+                }
             }
+            if (jumpsLeft > 0)
+                {
+                    _velocity = new Vector2(_velocity.x, jumpForce);
+                    _isGrounded = false;
+                    --jumpsLeft;
+                }
         }
     }
 
