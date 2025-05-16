@@ -25,14 +25,14 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Objects")]
     public Transform feet;
-
+    public GameObject playerModel;
     public Vector2 _velocity;
     [SerializeField]private bool _isGrounded = false;
     private Vector3 originalScale;
 
     void Start()
     {
-        originalScale = this.transform.localScale;
+        originalScale = playerModel.transform.localScale;
     }
 
     // Update is called once per frame
@@ -151,8 +151,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (dashing) return;
         facingRight = _bool;
-        if (facingRight) this.transform.localScale = new Vector3(originalScale.x * -1, originalScale.y, originalScale.z);
-        else this.transform.localScale = originalScale;
+        if (facingRight) playerModel.transform.localScale = new Vector3(originalScale.x * -1, originalScale.y, originalScale.z);
+        else playerModel.transform.localScale = originalScale;
     }
 
 
