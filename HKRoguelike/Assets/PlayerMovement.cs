@@ -1,8 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Parameters")]
+    private bool _inSpecialMovement = false;
+    private float _specialMovementTimer = 0;
     [Header("Walking")]
     public float speed = 5f;
     public Vector2 maxSpeed;
@@ -13,21 +16,21 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = 2f;
     public float maxJumpSpeed;
     public int amountOfJumps = 2;
+    public float _wallJumpSpeed = 4;
+    public float _wallJumpHeight = 5;
     private int jumpsLeft = 0;
     private bool _againstWallLeft = false;
     private bool _againstWallRight = false;
 
     [Header("Dashing Parameters")]
-    public bool dashing = false;
     public float dashTime = 2;
-    private float dashTimer = 0;
     public float dashSpeed = 2;
 
     [Header("Objects")]
     public Transform feet;
     public GameObject playerModel;
     public Vector2 _velocity;
-    [SerializeField]private bool _isGrounded = false;
+    [SerializeField] private bool _isGrounded = false;
     private Vector3 originalScale;
 
     void Start()
@@ -38,13 +41,50 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Movement();
-        ApplyDirection();
-        Jump();
-        applyGravity();
-        clampVelocity();
-        Dash();
+        if (_inSpecialMovement)
+        {
+            _specialMovementTimer -= Time.deltaTime;
+            if(_specialMovementTimer <= 0) _inSpecialMovement = false;
+        }
+        else
+        {
+            if (CheckSpecialMovementInput()) return;
+            Movement();
+            ApplyDirection();
+            Jump();
+            applyGravity();
+            clampVelocity();
+        }
         ApplyVelocity();
+    }
+    bool CheckSpecialMovementInput()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            SpecialMovement(SpecialMovementTypes.DASH);
+            return true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {   
+            if (!_isGrounded)
+            {
+                if (_againstWallLeft)
+                {
+                    SpecialMovement(SpecialMovementTypes.WALLJUMPRIGHT);
+                    return true;
+                }
+                if (_againstWallRight)
+                {
+                    SpecialMovement(SpecialMovementTypes.WALLJUMPLEFT);
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
+
     }
 
     void ApplyDirection()
@@ -65,28 +105,28 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) | Input.GetKeyDown(KeyCode.K))
         {
-            if (!_isGrounded)
-            {
-                if (_againstWallLeft)
-                {
-                    _velocity = new Vector2(3, jumpForce);
-                    SetFaceRight(true);
-                    return;
-                }
-                if (_againstWallRight)
-                {
-                    _velocity = new Vector2(-3, jumpForce);
-                    SetFaceRight(false);
-                    return;
-                }
-            }
             if (jumpsLeft > 0)
-                {
-                    _velocity = new Vector2(_velocity.x, jumpForce);
-                    _isGrounded = false;
-                    --jumpsLeft;
-                }
+            {
+                _velocity = new Vector2(_velocity.x, jumpForce);
+                _isGrounded = false;
+                --jumpsLeft;
+            }
         }
+    }
+
+    void WallJump(bool jumpRight)
+    {
+        if (jumpRight)
+        {
+            _velocity = new Vector2(_wallJumpSpeed, _wallJumpHeight);
+            SetFaceRight(true);
+        }
+        else
+        {
+            _velocity = new Vector2(-_wallJumpSpeed, _wallJumpHeight);
+            SetFaceRight(false);
+        }
+        _specialMovementTimer = 0.2f;
     }
 
     void ApplyVelocity()
@@ -101,7 +141,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void applyGrounded()
     {
-        _velocity.y = 0;
         jumpsLeft = amountOfJumps;
     }
 
@@ -115,33 +154,29 @@ public class PlayerMovement : MonoBehaviour
 
     private void clampVelocity()
     {
+        
         if (_velocity.x < maxSpeed.x * -1) _velocity.x = maxSpeed.x * -1;
-        if (_velocity.y < maxSpeed.y * -1) _velocity.y = maxSpeed.y * -1;
         if (_velocity.x > maxSpeed.x) _velocity.x = maxSpeed.x;
+        
+        if (_velocity.y < maxSpeed.y * -1) _velocity.y = maxSpeed.y * -1;
         if (_velocity.y > maxJumpSpeed) _velocity.y = maxJumpSpeed;
+
+        if (_isGrounded && _velocity.y < 0) _velocity.y = 0;
+
+        if (_againstWallLeft && _velocity.x < 0) _velocity.x = 0;
+        if (_againstWallRight && _velocity.x > 0) _velocity.x = 0;
     }
 
     private void Dash()
     {
         //TODO implement the dashing part
-        if (Input.GetKeyDown(KeyCode.L) && dashing == false)
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            dashing = true;
-            dashTimer = dashTime;
-        }
-        if (dashTimer > 0)
-        {
+            _specialMovementTimer = dashTime;
             if (facingRight) _velocity = new Vector2(dashSpeed, 0);
             else _velocity = new Vector2(-dashSpeed, 0);
-
-            dashTimer -= Time.deltaTime;
-        }
-        else
-        {
-            dashing = false;
         }
     }
-
 
     /// <summary>
     /// Positions the player to stand left or right
@@ -149,7 +184,6 @@ public class PlayerMovement : MonoBehaviour
     /// <param name="_bool">When true player is facing right, false facing left.</param>
     private void SetFaceRight(bool _bool)
     {
-        if (dashing) return;
         facingRight = _bool;
         if (facingRight) playerModel.transform.localScale = new Vector3(originalScale.x * -1, originalScale.y, originalScale.z);
         else playerModel.transform.localScale = originalScale;
@@ -171,4 +205,27 @@ public class PlayerMovement : MonoBehaviour
     {
         _againstWallRight = value;
     }
+    public void SpecialMovement(SpecialMovementTypes type)
+    {
+        _inSpecialMovement = true;
+        switch (type)
+        {
+            case SpecialMovementTypes.DASH:
+                Dash();
+                break;
+            case SpecialMovementTypes.WALLJUMPLEFT:
+                WallJump(false);
+                break;
+            case SpecialMovementTypes.WALLJUMPRIGHT:
+                WallJump(true);
+                break;
+        }
+    }
+}
+
+public enum SpecialMovementTypes
+{
+    DASH,
+    WALLJUMPLEFT,
+    WALLJUMPRIGHT,
 }
