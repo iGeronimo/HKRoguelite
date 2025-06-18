@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class groundCheck : MonoBehaviour
 {
-    private PlayerMovement parentPlayerMovement;
+    public PlayerMovement parentPlayerMovement;
     void Start()
     {
-        parentPlayerMovement = transform.parent.GetComponent<PlayerMovement>();
     }
     private void OnTriggerStay2D(Collider2D other)
     {

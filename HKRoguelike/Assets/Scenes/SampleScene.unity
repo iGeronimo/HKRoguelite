@@ -240,12 +240,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 810422794}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.45, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2033149108}
+  m_Father: {fileID: 1029968529}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &810422796
 BoxCollider2D:
@@ -304,6 +304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 415d1e3269004de4d885f2b5980e32d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentPlayerMovement: {fileID: 2033149111}
 --- !u!1 &916116792
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,12 +489,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948516760}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.45, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2033149108}
+  m_Father: {fileID: 1029968529}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &948516762
 BoxCollider2D:
@@ -552,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a29192786887d2947a41b73036c582bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentPlayerMovement: {fileID: 2033149111}
 --- !u!1 &951995764
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,6 +768,40 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1029968528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1029968529}
+  m_Layer: 0
+  m_Name: MovementChecks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1029968529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029968528}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1575847768}
+  - {fileID: 810422795}
+  - {fileID: 948516761}
+  m_Father: {fileID: 2033149108}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1575847767
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,12 +828,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575847767}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2033149108}
+  m_Father: {fileID: 1029968529}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1575847770
 MonoBehaviour:
@@ -811,6 +847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 765387bee5ae0244d82c3694d535baac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentPlayerMovement: {fileID: 2033149111}
 --- !u!61 &1575847771
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1085,7 +1122,7 @@ GameObject:
   - component: {fileID: 2033149112}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1104,9 +1141,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1743583946}
-  - {fileID: 1575847768}
-  - {fileID: 810422795}
-  - {fileID: 948516761}
+  - {fileID: 1029968529}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2033149110
@@ -1173,7 +1208,9 @@ MonoBehaviour:
   gravity: 0.098
   maxJumpSpeed: 15
   amountOfJumps: 2
-  dashing: 0
+  _wallJumpSpeed: 4
+  _wallJumpHeight: 5
+  _wallJumpTime: 0.1
   dashTime: 0.2
   dashSpeed: 15
   feet: {fileID: 1575847768}

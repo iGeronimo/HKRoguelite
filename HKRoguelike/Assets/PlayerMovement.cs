@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -21,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private int jumpsLeft = 0;
     private bool _againstWallLeft = false;
     private bool _againstWallRight = false;
+    public float _wallJumpTime = .1f;
 
     [Header("Dashing Parameters")]
     public float dashTime = 2;
@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         if (_inSpecialMovement)
         {
             _specialMovementTimer -= Time.deltaTime;
-            if(_specialMovementTimer <= 0) _inSpecialMovement = false;
+            if (_specialMovementTimer <= 0) _inSpecialMovement = false;
         }
         else
         {
@@ -66,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.K))
-        {   
+        {
             if (!_isGrounded)
             {
                 if (_againstWallLeft)
@@ -154,10 +154,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void clampVelocity()
     {
-        
+
         if (_velocity.x < maxSpeed.x * -1) _velocity.x = maxSpeed.x * -1;
         if (_velocity.x > maxSpeed.x) _velocity.x = maxSpeed.x;
-        
+
         if (_velocity.y < maxSpeed.y * -1) _velocity.y = maxSpeed.y * -1;
         if (_velocity.y > maxJumpSpeed) _velocity.y = maxJumpSpeed;
 
@@ -169,7 +169,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Dash()
     {
-        //TODO implement the dashing part
         if (Input.GetKeyDown(KeyCode.L))
         {
             _specialMovementTimer = dashTime;
@@ -220,6 +219,10 @@ public class PlayerMovement : MonoBehaviour
                 WallJump(true);
                 break;
         }
+    }
+    public bool isGrounded()
+    {
+        return _isGrounded;
     }
 }
 

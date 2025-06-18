@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class leftWallCheck : MonoBehaviour
 {
-    private PlayerMovement parentPlayerMovement;
+    public PlayerMovement parentPlayerMovement;
     void Start()
     {
-        parentPlayerMovement = transform.parent.GetComponent<PlayerMovement>();
     }
     void OnTriggerEnter2D(Collider2D collision)
     {
